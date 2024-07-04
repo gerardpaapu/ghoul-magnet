@@ -6,14 +6,13 @@ export function init() {
     })
 
     window.addEventListener('keyup', (evt) => {
+      keystate.down[evt.code] = false
       keystate.up[evt.code] = true
     })
   }
 
   function keys() {
-    let temp = keystate
-    keystate = { down: {}, up: {} }
-    return temp
+    return keystate
   }
 
   return { listen, keys }

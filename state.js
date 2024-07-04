@@ -1,6 +1,6 @@
 export function init() {
   const bullets = []
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 35; i++) {
     const bullet = {}
     randomiseBullet(bullet)
     bullets.push(bullet)
@@ -48,8 +48,8 @@ export function update(state, input) {
     return state
   }
 
-  for (let i = state.bullets.length - 1; i >= 0; i--) {
-    const bullet = state.bullets[i]
+  for (const bullet of state.bullets) {
+    // if the bullet is heading out of bounds
     if (
       (bullet.vx < 0 && bullet.x < 0) ||
       (bullet.vx > 0 && bullet.x > 640) ||
@@ -57,6 +57,7 @@ export function update(state, input) {
       (bullet.vy > 0 && bullet.y > 384)
     ) {
       randomiseBullet(bullet)
+      // spawn them to the center
       bullet.x = 640 / 2
       bullet.y = 384 / 2
     }
@@ -64,41 +65,44 @@ export function update(state, input) {
     bullet.x += bullet.vx
     bullet.y += bullet.vy
   }
+
   const avatar = state.avatar
+  const SPEED = 2
+  // I'm not really into these controls TBH
   if (input.down.ArrowLeft) {
-    avatar.vx--
+    avatar.x -= SPEED
   }
 
   if (input.down.ArrowRight) {
-    avatar.vx++
+    avatar.x += SPEED
   }
 
   if (input.down.ArrowUp) {
-    avatar.vy--
+    avatar.y -= SPEED
   }
 
   if (input.down.ArrowDown) {
-    avatar.vy++
+    avatar.y += SPEED
   }
 
-  if ((avatar.vy > 0 && avatar.y >= 368) || (avatar.vy < 0 && avatar.y <= 0)) {
-    avatar.vy = 0
-  }
+  // if ((avatar.vy > 0 && avatar.y >= 368) || (avatar.vy < 0 && avatar.y <= 0)) {
+  //   avatar.vy = 0
+  // }
 
-  if (
-    (avatar.vx > 0 && avatar.x >= 640 - 16) ||
-    (avatar.vx < 0 && avatar.x <= 0)
-  ) {
-    avatar.vx = 0
-  }
+  // if (
+  //   (avatar.vx > 0 && avatar.x >= 640 - 16) ||
+  //   (avatar.vx < 0 && avatar.x <= 0)
+  // ) {
+  //   avatar.vx = 0
+  // }
 
-  avatar.vx = clamp(avatar.vx, -20, 20)
-  avatar.vy = clamp(avatar.vy, -20, 20)
+  // avatar.vx = clamp(avatar.vx, -20, 20)
+  // avatar.vy = clamp(avatar.vy, -20, 20)
 
-  avatar.x += avatar.vx * 0.35
-  avatar.y += avatar.vy * 0.35
-  avatar.x = clamp(avatar.x, 0, 640 - 16)
-  avatar.y = clamp(avatar.y, 0, 384 - 16)
+  // avatar.x += avatar.vx * 0.35
+  // avatar.y += avatar.vy * 0.35
+  avatar.x = clamp(avatar.x, 0, 640)
+  avatar.y = clamp(avatar.y, 0, 384)
   avatar.x = Math.floor(avatar.x)
   avatar.y = Math.floor(avatar.y)
 
@@ -121,7 +125,7 @@ export function update(state, input) {
 }
 
 function hitByBullet(avatar, bullet) {
-  const dx = avatar.x + 8 - bullet.x
-  const dy = avatar.y + 8 - bullet.y
+  const dx = avatar.x - bullet.x
+  const dy = avatar.y - bullet.y
   return dx ** 2 + dy ** 2 < 128
 }

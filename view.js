@@ -21,8 +21,14 @@ export function render(state, canvas) {
     ctx.closePath()
   }
 
+  // it's a-me
   ctx.fillStyle = 'blue'
-  ctx.fillRect(state.avatar.x, state.avatar.y, 16, 16)
+  ctx.beginPath()
+  ctx.arc(state.avatar.x, state.avatar.y, 8, 0, 2 * Math.PI)
+  ctx.fill()
+  ctx.closePath()
+
+  // HUD
   ctx.font = '14px sans-serif'
   ctx.fillStyle = 'white'
   ctx.fillText(`Life: ${state.life}, candy: ${state.wealth}`, 140, 20)
