@@ -23,7 +23,17 @@ export function render(state, canvas) {
 
   ctx.fillStyle = 'blue'
   ctx.fillRect(state.avatar.x, state.avatar.y, 16, 16)
-
+  ctx.font = '14px sans-serif'
   ctx.fillStyle = 'white'
   ctx.fillText(`Life: ${state.life}, candy: ${state.wealth}`, 140, 20)
+
+  if (state.wealth >= 20) {
+    ctx.font = '64px sans-serif'
+    ctx.fillStyle = 'white'
+    ctx.fillText(`You win!`, 100, 200)
+  } else if (state.life <= 0) {
+    ctx.font = '64px sans-serif'
+    ctx.fillStyle = 'white'
+    ctx.fillText(`You lose!`, 100, 200)
+  }
 }
