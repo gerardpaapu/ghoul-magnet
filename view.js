@@ -4,16 +4,18 @@ export function render(state, canvas) {
   ctx.fillRect(0, 0, 640, 384)
 
   for (const bullet of state.bullets) {
-    for (const { x, y } of bullet.tail) {
+    for (const [i, { x, y }] of bullet.tail.entries()) {
       ctx.beginPath()
-      ctx.arc(x, y, 4, 0, 2 * Math.PI)
-      ctx.fillStyle = 'orange'
+      ctx.arc(x, y, 6, 0, 2 * Math.PI)
+      const mix = Math.min(100, Math.floor(i * 30))
+      ctx.fillStyle = `color-mix(in lch, red ${mix}%, orange)`
       ctx.strokeStyle = 'yellow'
       ctx.fill()
-      ctx.stroke()
+      // ctx.stroke()
       ctx.closePath()
     }
-
+  }
+  for (const bullet of state.bullets) {
     const { x, y, r } = bullet
     ctx.beginPath()
     ctx.arc(x, y, r, 0, 2 * Math.PI)
@@ -48,6 +50,14 @@ export function render(state, canvas) {
   ctx.arc(state.avatar.x, state.avatar.y, state.avatar.r, 0, 2 * Math.PI)
   ctx.fill()
   ctx.closePath()
+
+  if (state.source) {
+    ctx.fillStyle = 'white'
+    ctx.beginPath()
+    ctx.arc(state.source.x, state.source.y, 9, 0, 2 * Math.PI)
+    ctx.fill()
+    ctx.closePath()
+  }
 
   // HUD
   ctx.font = '14px sans-serif'

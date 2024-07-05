@@ -91,6 +91,13 @@ export function update(state, input) {
   }
 
   state.frame++
+  const source = {
+    x: WIDTH * 0.5 + Math.sin(state.frame * 0.02) * 100,
+    y: HEIGHT * 0.5 + Math.cos(state.frame * 0.02) * 100,
+  }
+  state.source = source
+
+  console.log(source)
 
   if (state.wealth >= 10 && state.doors.length === 0) {
     addDoors(state)
@@ -105,6 +112,8 @@ export function update(state, input) {
       (bullet.vy > 0 && bullet.y > HEIGHT)
     ) {
       randomiseBullet(bullet)
+      bullet.x = source.x
+      bullet.y = source.y
     }
 
     if (state.frame % 3 === 0) {
