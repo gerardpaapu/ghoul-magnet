@@ -6,8 +6,8 @@ export function render(state, canvas) {
   for (const bullet of state.bullets) {
     for (const { x, y } of bullet.tail) {
       ctx.beginPath()
-      ctx.arc(x, y, 6, 0, 2 * Math.PI)
-      ctx.fillStyle = 'pink'
+      ctx.arc(x, y, 4, 0, 2 * Math.PI)
+      ctx.fillStyle = 'orange'
       ctx.fill()
       ctx.closePath()
     }

@@ -17,6 +17,7 @@ export function init() {
     wealth: 0,
     wave: 1,
     score: 0,
+    frame: 1,
   }
 
   initWave(state)
@@ -77,9 +78,6 @@ function randomiseBullet(bullet) {
 
   bullet.vx = Math.cos(theta) * BULLET_SPEED
   bullet.vy = Math.sin(theta) * BULLET_SPEED
-  while (bullet.tail.length) {
-    bullet.tail.pop()
-  }
 }
 
 function clamp(n, x, y) {
@@ -90,6 +88,8 @@ export function update(state, input) {
   if (state.life <= 0 || state.wealth >= 20) {
     return state
   }
+
+  state.frame++
 
   if (state.wealth >= 10 && state.doors.length === 0) {
     addDoors(state)
@@ -106,12 +106,12 @@ export function update(state, input) {
       randomiseBullet(bullet)
     }
 
-    {
+    if (state.frame % 3 === 0) {
       const { x, y } = bullet
       bullet.tail = bullet.tail || []
       bullet.tail.push({ x, y })
 
-      while (bullet.tail.length > 12) {
+      while (bullet.tail.length > 4) {
         bullet.tail.shift()
       }
     }
