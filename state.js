@@ -159,6 +159,9 @@ export function update(state, input) {
     if (collide(avatar, bullet)) {
       state.life--
       randomiseBullet(bullet)
+      // you shouldn't be able to take more than one
+      // damage per frame I think...
+      break
     }
   }
 

@@ -8,7 +8,9 @@ export function render(state, canvas) {
       ctx.beginPath()
       ctx.arc(x, y, 4, 0, 2 * Math.PI)
       ctx.fillStyle = 'orange'
+      ctx.strokeStyle = 'yellow'
       ctx.fill()
+      ctx.stroke()
       ctx.closePath()
     }
 
@@ -25,7 +27,9 @@ export function render(state, canvas) {
     ctx.beginPath()
     ctx.arc(x, y, r, 0, 2 * Math.PI)
     ctx.fillStyle = 'yellow'
+    ctx.strokeStyle = 'white'
     ctx.fill()
+    ctx.stroke()
     ctx.closePath()
   }
 
