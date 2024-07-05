@@ -25,8 +25,9 @@ export function init() {
 }
 
 function nextWave(state) {
+  // cash in your coins for points
+  state.score += state.wealth * state.wave
   state.wave++
-  state.score += state.wealth
   state.wealth = 0
   initWave(state)
 }
