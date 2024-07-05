@@ -1,42 +1,85 @@
+const COIN_COUNT = 15
+const BULLET_SPEED = 1.2
+const BULLET_M = 60
+
+const WIDTH = 640
+const HEIGHT = 384
+
 export function init() {
-  const bullets = []
-  for (let i = 0; i < 35; i++) {
-    const bullet = {}
-    randomiseBullet(bullet)
-    bullets.push(bullet)
-  }
+  const avatar = { x: 0, y: 0, r: 8 }
+  let state = {
+    bullets: [],
+    coins: [],
+    doors: [],
 
-  const coins = []
-  for (let i = 0; i < 30; i++) {
-    const coin = {}
-    randomiseCoin(coin)
-    coins.push(coin)
-  }
-
-  const avatar = { x: 0, y: 0, vx: 0, vy: 0 }
-  const life = 20
-  const wealth = 0
-
-  return {
-    bullets,
-    coins,
     avatar,
-    life,
-    wealth,
+    life: 10,
+    wealth: 0,
+    wave: 1,
+    score: 0,
+  }
+
+  initWave(state)
+  return state
+}
+
+function nextWave(state) {
+  state.wave++
+  state.score += state.wealth
+  state.wealth = 0
+  initWave(state)
+}
+
+function initWave(state) {
+  let bulletCount = Math.log(state.wave + 1) * BULLET_M
+
+  while (state.bullets.length < bulletCount) {
+    const bullet = { r: 8, tail: [] }
+    state.bullets.push(bullet)
+  }
+
+  for (const bullet of state.bullets) {
+    randomiseBullet(bullet)
+  }
+
+  while (state.coins.length < COIN_COUNT) {
+    const coin = { r: 8 }
+    randomiseCoin(coin)
+    state.coins.push(coin)
+  }
+
+  while (state.doors.length) {
+    state.doors.splice(0, 1)
+  }
+}
+
+function addDoors(state) {
+  while (state.doors.length < 4) {
+    let door = {
+      x: Math.floor(Math.random() * WIDTH),
+      y: Math.floor(Math.random() * HEIGHT),
+      r: 12,
+    }
+    state.doors.push(door)
   }
 }
 
 function randomiseCoin(coin) {
-  coin.x = Math.floor(Math.random() * 640)
-  coin.y = Math.floor(Math.random() * 384)
+  coin.x = Math.floor(Math.random() * WIDTH)
+  coin.y = Math.floor(Math.random() * HEIGHT)
 }
 
 function randomiseBullet(bullet) {
   const theta = Math.random() * 2 * Math.PI
-  bullet.x = Math.floor(Math.random() * 640)
-  bullet.y = Math.floor(Math.random() * 384)
-  bullet.vx = Math.cos(theta)
-  bullet.vy = Math.sin(theta)
+  // spawn them to the center
+  bullet.x = WIDTH / 2
+  bullet.y = HEIGHT / 2
+
+  bullet.vx = Math.cos(theta) * BULLET_SPEED
+  bullet.vy = Math.sin(theta) * BULLET_SPEED
+  while (bullet.tail.length) {
+    bullet.tail.pop()
+  }
 }
 
 function clamp(n, x, y) {
@@ -48,18 +91,29 @@ export function update(state, input) {
     return state
   }
 
+  if (state.wealth >= 10 && state.doors.length === 0) {
+    addDoors(state)
+  }
+
   for (const bullet of state.bullets) {
     // if the bullet is heading out of bounds
     if (
       (bullet.vx < 0 && bullet.x < 0) ||
-      (bullet.vx > 0 && bullet.x > 640) ||
+      (bullet.vx > 0 && bullet.x > WIDTH) ||
       (bullet.vy < 0 && bullet.y < 0) ||
-      (bullet.vy > 0 && bullet.y > 384)
+      (bullet.vy > 0 && bullet.y > HEIGHT)
     ) {
       randomiseBullet(bullet)
-      // spawn them to the center
-      bullet.x = 640 / 2
-      bullet.y = 384 / 2
+    }
+
+    {
+      const { x, y } = bullet
+      bullet.tail = bullet.tail || []
+      bullet.tail.push({ x, y })
+
+      while (bullet.tail.length > 12) {
+        bullet.tail.shift()
+      }
     }
 
     bullet.x += bullet.vx
@@ -68,7 +122,6 @@ export function update(state, input) {
 
   const avatar = state.avatar
   const SPEED = 2
-  // I'm not really into these controls TBH
   if (input.down.ArrowLeft) {
     avatar.x -= SPEED
   }
@@ -85,47 +138,40 @@ export function update(state, input) {
     avatar.y += SPEED
   }
 
-  // if ((avatar.vy > 0 && avatar.y >= 368) || (avatar.vy < 0 && avatar.y <= 0)) {
-  //   avatar.vy = 0
-  // }
-
-  // if (
-  //   (avatar.vx > 0 && avatar.x >= 640 - 16) ||
-  //   (avatar.vx < 0 && avatar.x <= 0)
-  // ) {
-  //   avatar.vx = 0
-  // }
-
-  // avatar.vx = clamp(avatar.vx, -20, 20)
-  // avatar.vy = clamp(avatar.vy, -20, 20)
-
-  // avatar.x += avatar.vx * 0.35
-  // avatar.y += avatar.vy * 0.35
-  avatar.x = clamp(avatar.x, 0, 640)
-  avatar.y = clamp(avatar.y, 0, 384)
+  avatar.x = clamp(avatar.x, 0, WIDTH)
+  avatar.y = clamp(avatar.y, 0, HEIGHT)
   avatar.x = Math.floor(avatar.x)
   avatar.y = Math.floor(avatar.y)
 
+  // iterating backwards so that splice is safe
+  // otherwise removing items while iterating
+  // invalidates indexes
   for (let i = state.coins.length - 1; i >= 0; i--) {
     let coin = state.coins[i]
-    if (hitByBullet(avatar, coin)) {
+    if (collide(avatar, coin)) {
       state.wealth++
       state.coins.splice(i, 1)
     }
   }
 
   for (const bullet of state.bullets) {
-    if (hitByBullet(avatar, bullet)) {
+    if (collide(avatar, bullet)) {
       state.life--
       randomiseBullet(bullet)
+    }
+  }
+
+  for (const door of state.doors) {
+    if (collide(avatar, door)) {
+      nextWave(state)
     }
   }
 
   return state
 }
 
-function hitByBullet(avatar, bullet) {
-  const dx = avatar.x - bullet.x
-  const dy = avatar.y - bullet.y
-  return dx ** 2 + dy ** 2 < 128
+function collide(lhs, rhs) {
+  const dx = lhs.x - rhs.x
+  const dy = lhs.y - rhs.y
+  return dx ** 2 + dy ** 2 < (lhs.r + rhs.r) ** 2
 }
