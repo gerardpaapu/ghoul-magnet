@@ -72,10 +72,15 @@ export function update(state, input) {
     dir.y = Math.sign(dir.y) * Math.SQRT1_2
   }
 
-  if (input.DASH && !avatar.dashing && avatar.dashMeter == DASH_METER_MAX) {
+  const canDashNormal = !avatar.dashing && avatar.dashMeter == DASH_METER_MAX
+  const canDashJustFrame =
+    avatar.dashing && avatar.dashing.t <= 2 && !avatar.dashing.isDouble
+  const canDash = canDashJustFrame || canDashNormal
+  if (input.DASH && canDash) {
     avatar.dashMeter = 0
     avatar.dashing = {
       t: DASH_DURATION_FRAMES,
+      isDouble: canDashJustFrame,
       dir,
     }
   } else {
@@ -86,9 +91,6 @@ export function update(state, input) {
   if (avatar.dashing) {
     avatar.x += avatar.dashing.dir.x * DASH_SPEED
     avatar.y += avatar.dashing.dir.y * DASH_SPEED
-    if (avatar.dashing.t >= 8) {
-    }
-
     if (--avatar.dashing.t <= 0) {
       avatar.dashing = undefined
     }
