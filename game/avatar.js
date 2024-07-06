@@ -7,6 +7,7 @@ import {
   DASH_I_FRAMES,
   DASH_SPEED,
   FEATURE_POWERUPS,
+  WALK_SPEED,
 } from './constants.js'
 
 export function render(state, ctx) {
@@ -49,7 +50,6 @@ export function init(state) {
 export function update(state, input) {
   const avatar = state.avatar
 
-  const SPEED = 2
   const dir = { x: 0, y: 0 }
   if (input.LEFT) {
     dir.x--
@@ -79,8 +79,8 @@ export function update(state, input) {
       dir,
     }
   } else {
-    avatar.x += dir.x * SPEED
-    avatar.y += dir.y * SPEED
+    avatar.x += dir.x * WALK_SPEED
+    avatar.y += dir.y * WALK_SPEED
   }
 
   if (avatar.dashing) {

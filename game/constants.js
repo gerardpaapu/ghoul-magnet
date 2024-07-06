@@ -1,5 +1,6 @@
 export const WIDTH = 640
 export const HEIGHT = 384
+export const WALK_SPEED = 2
 export const BULLET_SPEED = 1.4
 export const BULLET_M = 60
 export const COIN_COUNT = 15
