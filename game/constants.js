@@ -8,7 +8,7 @@ export const DASH_METER_MAX = 100
 export const DASH_METER_COOLDOWN = 200
 export const DASH_SPEED = 10
 export const DASH_I_FRAMES = 8
-export const DASH_DURATION_FRAMES = 14
+export const DASH_DURATION_FRAMES = 10
 
 // feature flags
 export const FEATURE_POWERUPS =
