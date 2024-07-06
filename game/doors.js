@@ -25,7 +25,6 @@ export function initWave(state) {
 export function update(state) {
   if (state.wealth >= 10 && state.doors.length === 0) {
     addDoors(state)
-    console.log(state.doors)
   }
 
   for (const door of state.doors) {
