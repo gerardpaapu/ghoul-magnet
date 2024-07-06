@@ -25,6 +25,7 @@ export function initWave(state) {
 export function update(state) {
   if (state.wealth >= 10 && state.doors.length === 0) {
     addDoors(state)
+    console.log(state.doors)
   }
 
   for (const door of state.doors) {
@@ -36,9 +37,14 @@ export function update(state) {
 
 function addDoors(state) {
   while (state.doors.length < 4) {
+    let theta = Math.random() * 2 * Math.PI
+    let d = HEIGHT * (Math.random() * 0.2 + 0.3)
+    const x = WIDTH * 0.5 + Math.sin(theta) * d
+    const y = HEIGHT * 0.5 + Math.cos(theta) * d
+
     let door = {
-      x: Math.floor(Math.random() * WIDTH),
-      y: Math.floor(Math.random() * HEIGHT),
+      x,
+      y,
       r: 12,
     }
     state.doors.push(door)
