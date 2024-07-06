@@ -109,6 +109,4 @@ function clamp(n, x, y) {
 function clampToBounds(avatar) {
   avatar.x = clamp(avatar.x, 0, WIDTH)
   avatar.y = clamp(avatar.y, 0, HEIGHT)
-  avatar.x = Math.floor(avatar.x)
-  avatar.y = Math.floor(avatar.y)
 }

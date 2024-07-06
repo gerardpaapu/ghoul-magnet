@@ -4,7 +4,7 @@ export function render(state, ctx) {
   ctx.fillText(
     `wave: ${state.wave}, life: ${state.life}, candy: ${state.wealth}, score: ${
       state.score
-    }, meter: ${state.avatar.dashMeter.toFixed(0)}`,
+    }, meter: ${state.avatar.dashMeter.toFixed(0).padStart(3, '0')}%`,
     140,
     20
   )
