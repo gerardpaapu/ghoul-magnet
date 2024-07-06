@@ -22,8 +22,13 @@ export function render(state, ctx) {
     ctx.fillStyle = 'skyblue'
   }
 
+  let r =
+    state.avatar.dashing && DASH_DURATION_FRAMES - state.avatar.dashing.t < 2
+      ? 3
+      : 1
+
   ctx.beginPath()
-  ctx.arc(state.avatar.x, state.avatar.y, state.avatar.r, 0, 2 * Math.PI)
+  ctx.arc(state.avatar.x, state.avatar.y, state.avatar.r * r, 0, 2 * Math.PI)
   ctx.fill()
 
   if (canDash) {
