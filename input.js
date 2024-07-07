@@ -34,7 +34,7 @@ export function init() {
 
   function keys() {
     return {
-      UP: keystate.down.ArrowUp || keystate.down.KasdeyW,
+      UP: keystate.down.ArrowUp || keystate.down.KeyW,
       DOWN: keystate.down.ArrowDown || keystate.down.KeyS,
       LEFT: keystate.down.ArrowLeft || keystate.down.KeyA,
       RIGHT: keystate.down.ArrowRight || keystate.down.KeyD,
