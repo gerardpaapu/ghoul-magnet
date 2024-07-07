@@ -39,7 +39,7 @@ function initWave(state) {
   Powerups.initWave(state)
 }
 
-export function update(state, input) {
+export function update(state, ctx) {
   if (state.life <= 0 || state.wealth >= 20) {
     return state
   }
@@ -51,11 +51,11 @@ export function update(state, input) {
 
   state.frame++
 
-  Bullets.update(state)
-  Avatar.update(state, input)
-  Coins.update(state)
-  Doors.update(state)
-  Powerups.update(state)
+  Bullets.update(state, ctx)
+  Avatar.update(state, ctx)
+  Coins.update(state, ctx)
+  Doors.update(state, ctx)
+  Powerups.update(state, ctx)
 
   return state
 }

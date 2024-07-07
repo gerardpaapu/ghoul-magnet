@@ -32,13 +32,14 @@ function randomiseCoin(coin) {
   coin.y = Math.floor(Math.random() * HEIGHT)
 }
 
-export function update(state) {
+export function update(state, ctx) {
   // iterating backwards so that splice is safe
   // otherwise removing items while iterating
   // invalidates indexes
   for (let i = state.coins.length - 1; i >= 0; i--) {
     let coin = state.coins[i]
     if (collide(state.avatar, coin)) {
+      ctx.playSound('pickup_coin')
       state.wealth++
       state.coins.splice(i, 1)
     }

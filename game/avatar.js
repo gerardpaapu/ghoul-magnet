@@ -47,8 +47,9 @@ export function init(state) {
   state.avatar = { x: 0, y: 0, r, dashing: undefined, dashMeter: 100 }
 }
 
-export function update(state, input) {
+export function update(state, ctx) {
   const avatar = state.avatar
+  const input = ctx.keys()
 
   const dir = { x: 0, y: 0 }
   if (input.LEFT) {

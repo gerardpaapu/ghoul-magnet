@@ -8,7 +8,7 @@ import {
 } from './constants.js'
 import { collide } from './collide.js'
 
-export function update(state) {
+export function update(state, ctx) {
   if (state.wave % 2 === 0) {
     state.source.x = WIDTH * (0.5 + Math.sin(state.frame * 0.008) * 0.4)
     state.source.y = HEIGHT * (0.5 + Math.sin(state.frame * 0.016) * 0.4)
@@ -48,6 +48,8 @@ export function update(state) {
     if (collide(state.avatar, bullet)) {
       hitByBullet = true
       randomiseBullet(bullet)
+      bullet.x = state.source.x
+      bullet.y = state.source.y
       // you shouldn't be able to take more than one
       // damage per frame I think...
       break
@@ -59,6 +61,7 @@ export function update(state) {
     state.avatar.dashing.t < DASH_DURATION_FRAMES - DASH_I_FRAMES
 
   if (hitByBullet && isVulnerable) {
+    ctx.playSound('hit_hurt')
     state.life--
   }
 }

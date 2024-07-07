@@ -22,13 +22,14 @@ export function initWave(state) {
   }
 }
 
-export function update(state) {
+export function update(state, ctx) {
   if (state.wealth >= 10 && state.doors.length === 0) {
     addDoors(state)
   }
 
   for (const door of state.doors) {
     if (collide(state.avatar, door)) {
+      ctx.playSound('jump')
       state.nextWave = true
     }
   }
